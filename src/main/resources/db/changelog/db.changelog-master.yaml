@@ -1,0 +1,144 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: aleksandr.mishin
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: userPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                    unique: true
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: role_id
+                  type: BIGINT
+            schemaName: universal
+            tableName: user
+
+  - changeSet:
+      id: 2
+      author: aleksandr.mishin
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: dictionaryPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: discriminator
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: ext_id
+                  type: VARCHAR(255)
+            schemaName: universal
+            tableName: dictionary
+
+  - changeSet:
+      id: 3
+      author: aleksandr.mishin
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: role_id
+            baseTableName: user
+            baseTableSchemaName: universal
+            constraintName: fk_role_user
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: RESTRICT
+            onUpdate: RESTRICT
+            referencedColumnNames: id
+            referencedTableName: dictionary
+            referencedTableSchemaName: universal
+            validate: true
+
+  - changeSet:
+      id: 4
+      author: aleksandr.mishin
+      changes:
+        - addUniqueConstraint:
+            columnNames: discriminator, name
+            constraintName: discriminator_name
+            deferrable: false
+            initiallyDeferred: false
+            schemaName: universal
+            tableName: dictionary
+            validate: true
+
+  - changeSet:
+      id: 5
+      author: aleksandr.mishin
+      comment: "create role discriminators: admin, user"
+      changes:
+        - insert:
+            tableName: dictionary
+            schemaName: universal
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: discriminator
+                  value: "ROLE"
+              - column:
+                  name: name
+                  value: "ADMIN"
+              - column:
+                  name: ext_id
+                  value: "ADMIN"
+        - insert:
+            tableName: dictionary
+            schemaName: universal
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: discriminator
+                  value: "ROLE"
+              - column:
+                  name: name
+                  value: "USER"
+              - column:
+                  name: ext_id
+                  value: "USER"
+
+  - changeSet:
+      id: 6
+      author: aleksandr.mishin
+      comment: "create admin"
+      changes:
+        - insert:
+            tableName: user
+            schemaName: universal
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: name
+                  value: "admin"
+              - column:
+                  name: role_id
+                  value: 1

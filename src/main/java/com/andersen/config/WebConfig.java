@@ -39,14 +39,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
                 .groupName("full-api")
                 .produces(new HashSet<>(Collections.singletonList(MediaType.APPLICATION_JSON_VALUE)))
                 .select()
-                .apis(baseControllersPackage())
+                .apis(RequestHandlerSelectors.basePackage("com.andersen.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }
-
-    private Predicate<RequestHandler> baseControllersPackage() {
-        return RequestHandlerSelectors
-                .basePackage("com.andersen.controller");
-    }
-
 }

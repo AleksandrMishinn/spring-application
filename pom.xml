@@ -13,7 +13,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <swagger.version>2.9.2</swagger.version>
         <swagger.version>2.9.2</swagger.version>
-        <spring.version>4.3.7.RELEASE</spring.version>
+        <spring.version>5.2.6.RELEASE</spring.version>
         <tomcat.version>8.5.51</tomcat.version>
         <lombok.version>1.18.12</lombok.version>
         <jackson.databind.version>2.9.10.3</jackson.databind.version>
@@ -121,7 +121,6 @@
             <version>1.6</version>
         </dependency>
 
-
         <!-- Logging -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -149,6 +148,18 @@
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
             <version>${liquibase.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+            <version>2.3.0.RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>6.1.0.Final</version>
         </dependency>
 
     </dependencies>

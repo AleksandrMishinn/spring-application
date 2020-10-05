@@ -9,59 +9,57 @@ import com.andersen.dto.UserDto;
 import com.andersen.repository.RoleRepository;
 import com.andersen.repository.UserRepository;
 import com.andersen.service.UserService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
-public class UserServiceImpl implements UserService {
+@RequiredArgsConstructor
+public class UserServiceImpl implements UserService { //todo null values, create method
 
-    private RoleRepository roleRepository;
-    private UserRepository userRepository;
-    private UserConverter converter;
+    private final RoleRepository roleRepository;
+    private final UserRepository userRepository;
+    private final UserConverter converter;
 
     @Override
-    @Transactional(readOnly = true)
     public List<UserDto> findAll() {
-        return userRepository.findAll()
+        return userRepository
+                .findAll()
                 .stream()
-                .map((user) -> converter.convertToDto(user))
+                .map(converter::convertToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    @Transactional(readOnly = true)
     public UserDto getUser(long id) {
-        Optional<User> userOptional = userRepository.getUser(id);
-        User user = userOptional.orElseThrow(() -> new UserNotFoundException(id));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
         return converter.convertToDto(user);
     }
 
     @Override
-    @Transactional
-    public void createUser(UserDto userDto) {
+    public UserDto createUser(UserDto userDto) {
+        Role role = roleRepository.findById(Long.parseLong(userDto.getRole()))
+                .orElseThrow(() -> new RoleNotFoundException(userDto.getRole()));
+
         User newUser = converter.convertToEntity(userDto);
-        Optional<Role> userRole = roleRepository.getRole(userDto.getRole());
-        Role role = userRole.orElseThrow(() -> new RoleNotFoundException(userDto.getRole()));
         newUser.setRole(role);
 
-        userRepository.saveUser(newUser);
+        return converter.convertToDto(userRepository.save(newUser));
     }
 
     @Override
-    public void updateUser(UserDto userDto) {
+    public UserDto updateUser(UserDto userDto) {
 
-        Optional<User> userOptional = userRepository.getUser(userDto.getId());
-        User user = userOptional.orElseThrow(() -> new UserNotFoundException(userDto.getId()));
+        User user = userRepository.findById(userDto.getId())
+                .orElseThrow(() -> new UserNotFoundException(userDto.getId()));
 
         if (userDto.getRole() != null) {
-            Optional<Role> userRole = roleRepository.getRole(userDto.getRole());
-            Role role = userRole.orElseThrow(() -> new RoleNotFoundException(userDto.getRole()));
+            Role role = roleRepository.findById(Long.parseLong(userDto.getRole()))
+                    .orElseThrow(() -> new RoleNotFoundException(userDto.getRole()));
+
             user.setRole(role);
         }
 
@@ -69,15 +67,18 @@ public class UserServiceImpl implements UserService {
             user.setName(userDto.getName());
         }
 
-        userRepository.saveUser(user);
+        userRepository.save(user);
+
+        return converter.convertToDto(user);
     }
 
     @Override
-    @Transactional
-    public void deleteUser(long id) {
-        Optional<User> userOptional = userRepository.getUser(id);
-        User user = userOptional.orElseThrow(() -> new UserNotFoundException(id));
-        userRepository.deleteUser(id);
-    }
+    public UserDto deleteUser(long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
 
+        userRepository.deleteById(id);
+
+        return converter.convertToDto(user);
+    }
 }

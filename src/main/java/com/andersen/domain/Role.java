@@ -1,10 +1,8 @@
 package com.andersen.domain;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
@@ -12,16 +10,9 @@ import javax.persistence.Entity;
 @DiscriminatorValue("ROLE")
 @Getter
 @Setter
-public class Role extends Dictionary {
+public class Role extends Dictionary implements BaseEntity {
 
-    @Column(name = "name")
     private String name;
-
-    public Role() {}
-
-    public Role(String name) {
-        this.name = name;
-    }
 
     @Override
     public String toString() {

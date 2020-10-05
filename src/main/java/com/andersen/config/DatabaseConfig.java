@@ -11,18 +11,24 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
 import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan(basePackages = "com.andersen.repository")
+@EnableJpaRepositories(basePackages = "com.andersen.repository")
+@ComponentScan(basePackages = {"com.andersen.repository", "com.andersen.domain"})
 @PropertySource("classpath:database.properties")
+
 public class DatabaseConfig {
 
     @Value("${database.name}")
@@ -45,7 +51,7 @@ public class DatabaseConfig {
     private String maxIdleTime;
     @Value("${hibernate.packagesToScan:com.andersen.domain}")
     private String packagesToScan;
-    @Value("${hibernate.dialect:org.hibernate.dialect.PostgreSQL10Dialect}")
+    @Value("${hibernate.dialect:org.hibernate.dialect.MySQL8Dialect}")
     private String dialect;
     @Value("${log.query.level:debug}")
     private String logQueryLevel;
@@ -100,4 +106,20 @@ public class DatabaseConfig {
 
         return sessionFactory;
     }
+
+    @Bean
+    public EntityManagerFactory entityManagerFactory() {
+
+        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        vendorAdapter.setGenerateDdl(true);
+
+        LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
+        factory.setJpaVendorAdapter(vendorAdapter);
+        factory.setPackagesToScan("com.andersen.domain");
+        factory.setDataSource(dataSource());
+        factory.afterPropertiesSet();
+
+        return factory.getObject();
+    }
+
 }

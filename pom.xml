@@ -26,6 +26,7 @@
     </properties>
 
     <dependencies>
+
         <!-- Spring -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -38,9 +39,35 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+            <version>2.3.0.RELEASE</version>
+        </dependency>
+
+        <!-- Spring Security -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
             <version>${spring.version}</version>
         </dependency>
 
@@ -50,11 +77,13 @@
             <artifactId>tomcat-embed-core</artifactId>
             <version>${tomcat.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-jasper</artifactId>
             <version>${tomcat.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-jasper</artifactId>
@@ -67,6 +96,7 @@
             <artifactId>jackson-core</artifactId>
             <version>${jackson.core.version}</version>
         </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -79,6 +109,7 @@
             <artifactId>springfox-swagger2</artifactId>
             <version>${swagger.version}</version>
         </dependency>
+
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
@@ -114,6 +145,12 @@
             <version>${hibernate.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>6.1.0.Final</version>
+        </dependency>
+
         <!-- Datasource-proxy  -->
         <dependency>
             <groupId>net.ttddyy</groupId>
@@ -127,16 +164,19 @@
             <artifactId>log4j-api</artifactId>
             <version>${log4j.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>${log4j.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>${log4j.version}</version>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.slf4j/jcl-over-slf4j -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -144,22 +184,11 @@
             <version>1.7.30</version>
         </dependency>
 
+        <!-- Liquibase -->
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
             <version>${liquibase.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jpa</artifactId>
-            <version>2.3.0.RELEASE</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>6.1.0.Final</version>
         </dependency>
 
     </dependencies>

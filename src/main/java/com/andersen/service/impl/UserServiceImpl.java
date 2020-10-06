@@ -10,6 +10,11 @@ import com.andersen.repository.RoleRepository;
 import com.andersen.repository.UserRepository;
 import com.andersen.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,11 +22,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService { //todo null values, create method
+public class UserServiceImpl implements UserService, UserDetailsService { //todo null values, create method
 
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final UserConverter converter;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public List<UserDto> findAll() {
@@ -46,6 +52,7 @@ public class UserServiceImpl implements UserService { //todo null values, create
 
         User newUser = converter.convertToEntity(userDto);
         newUser.setRole(role);
+        newUser.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
 
         return converter.convertToDto(userRepository.save(newUser));
     }
@@ -80,5 +87,16 @@ public class UserServiceImpl implements UserService { //todo null values, create
         userRepository.deleteById(id);
 
         return converter.convertToDto(user);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username);
+
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        return user;
     }
 }

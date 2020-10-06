@@ -18,4 +18,7 @@ public class UserDto {
 
     @NotNull
     private long id;
+
+    @NotNull
+    private String password;
 }

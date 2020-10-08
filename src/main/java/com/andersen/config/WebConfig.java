@@ -1,6 +1,5 @@
 package com.andersen.config;
 
-import com.google.common.base.Predicate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -8,7 +7,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import springfox.documentation.RequestHandler;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
@@ -19,10 +17,12 @@ import java.util.Collections;
 import java.util.HashSet;
 
 @Configuration
-@ComponentScan(basePackages = {"com.andersen.controller"})
+@ComponentScan(basePackages = {"com.andersen.controller", "com.andersen.security"})
 @EnableWebMvc
 @EnableSwagger2
 public class WebConfig extends WebMvcConfigurerAdapter {
+
+
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

@@ -9,27 +9,29 @@ import com.andersen.dto.UserDto;
 import com.andersen.repository.RoleRepository;
 import com.andersen.repository.UserRepository;
 import com.andersen.service.UserService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
-public class UserServiceImpl implements UserService, UserDetailsService { //todo null values, create method
+@AllArgsConstructor
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final UserConverter converter;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
+    @Secured("ROLE_USER")
+    @Transactional
     public List<UserDto> findAll() {
         return userRepository
                 .findAll()
@@ -39,6 +41,7 @@ public class UserServiceImpl implements UserService, UserDetailsService { //todo
     }
 
     @Override
+    @PostAuthorize("returnObject.id == #id")
     public UserDto getUser(long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
@@ -47,14 +50,15 @@ public class UserServiceImpl implements UserService, UserDetailsService { //todo
 
     @Override
     public UserDto createUser(UserDto userDto) {
+        User newUser = converter.convertToEntity(userDto);
+
         Role role = roleRepository.findById(Long.parseLong(userDto.getRole()))
                 .orElseThrow(() -> new RoleNotFoundException(userDto.getRole()));
-
-        User newUser = converter.convertToEntity(userDto);
         newUser.setRole(role);
-        newUser.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
 
-        return converter.convertToDto(userRepository.save(newUser));
+        userRepository.save(newUser);
+
+        return converter.convertToDto(newUser);
     }
 
     @Override

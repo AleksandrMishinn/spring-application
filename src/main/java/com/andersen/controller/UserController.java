@@ -4,7 +4,9 @@ import com.andersen.dto.Response;
 import com.andersen.dto.UserDto;
 import com.andersen.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class UserController {
 
+    @Autowired
     private final UserService userService;
 
     @GetMapping

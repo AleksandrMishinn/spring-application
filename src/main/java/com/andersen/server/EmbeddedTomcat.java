@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.tomcat.util.descriptor.web.FilterDef;
+import org.apache.tomcat.util.descriptor.web.FilterMap;
 import org.apache.tomcat.util.scan.StandardJarScanner;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -38,6 +40,16 @@ public class EmbeddedTomcat {
         jarScanner.setScanManifest(false);
         tomcat.start();
         tomcat.getServer().await();
+
+        FilterDef filterDef = new FilterDef();
+        filterDef.setFilterName("springSecurityFilterChain");
+        filterDef.setFilterClass("org.springframework.web.filter.DelegatingFilterProxy");
+        context.addFilterDef(filterDef);
+
+        FilterMap filterMapping = new FilterMap();
+        filterMapping.setFilterName("springSecurityFilterChain");
+        filterMapping.addURLPattern("/api/**");
+        context.addFilterMap(filterMapping);
     }
 
 

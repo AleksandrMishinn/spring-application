@@ -15,7 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
     private static UserDetailsService userService;
 
     @Bean
@@ -38,18 +37,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected static void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder());
     }
-
-    @Autowired
-    public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("admin")
-                .password(bCryptPasswordEncoder().encode("admin"))
-                .roles("ADMIN");
-
+//                 *** If there is no database ***
+//    @Autowired
+//    public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.inMemoryAuthentication()
+//                .withUser("admin")
+//                .password(bCryptPasswordEncoder().encode("admin"))
+//                .roles("ADMIN");
+//
 //        auth.inMemoryAuthentication()
 //                .withUser("user")
 //                .password(bCryptPasswordEncoder().encode("user"))
 //                .roles("USER");
-    }
+//    }
 }
 

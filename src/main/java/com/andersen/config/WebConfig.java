@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.HashSet;
 
 @Configuration
-@ComponentScan(basePackages = {"com.andersen.controller", "com.andersen.security"})
+@ComponentScan(basePackages = {"com.andersen.controller"})
 @EnableWebMvc
 @EnableSwagger2
 public class WebConfig implements WebMvcConfigurer {

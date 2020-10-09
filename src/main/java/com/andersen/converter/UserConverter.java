@@ -2,23 +2,15 @@ package com.andersen.converter;
 
 import com.andersen.domain.User;
 import com.andersen.dto.UserDto;
-import com.andersen.repository.RoleRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @Component
 @AllArgsConstructor
 public class UserConverter implements ConverterToEntity<UserDto, User>, ConverterToDto<User, UserDto> {
 
-    @Autowired
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    @Autowired
-    private final RoleRepository roleRepository;
 
     @Override
     public UserDto convertToDto(User user) {
@@ -43,7 +35,6 @@ public class UserConverter implements ConverterToEntity<UserDto, User>, Converte
         }
 
         String encodedPass = bCryptPasswordEncoder.encode(userDto.getPassword());
-
         user.setPassword(encodedPass);
         user.setPasswordConfirm(encodedPass);
 

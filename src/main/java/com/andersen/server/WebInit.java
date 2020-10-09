@@ -15,7 +15,6 @@ public class WebInit implements WebApplicationInitializer {
 
     @Override
     public void onStartup(ServletContext container) {
-
         AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
         rootContext.register(AppConfig.class);
         rootContext.register(DatabaseConfig.class);
@@ -28,7 +27,5 @@ public class WebInit implements WebApplicationInitializer {
         ServletRegistration.Dynamic dispatcher = container.addServlet("dispatcher", dispatcherServlet);
         dispatcher.setLoadOnStartup(1);
         dispatcher.addMapping("/");
-
     }
-
 }

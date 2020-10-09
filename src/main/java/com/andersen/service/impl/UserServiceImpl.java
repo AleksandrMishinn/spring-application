@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserConverter converter;
 
     @Override
-    @Secured("ROLE_USER")
+    @Secured("ROLE_ADMIN")
     @Transactional
     public List<UserDto> findAll() {
         return userRepository
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    @PostAuthorize("returnObject.id == #id")
+    @PostAuthorize("principal.getUsername() == returnObject.username or hasRole('ROLE_ADMIN')")
     public UserDto getUser(long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
@@ -49,6 +49,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Secured("ROLE_ADMIN")
     public UserDto createUser(UserDto userDto) {
         User newUser = converter.convertToEntity(userDto);
 
@@ -62,21 +63,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @PostAuthorize("principal.getUsername() == returnObject.username or hasRole('ROLE_ADMIN')")
     public UserDto updateUser(UserDto userDto) {
 
         User user = userRepository.findById(userDto.getId())
                 .orElseThrow(() -> new UserNotFoundException(userDto.getId()));
 
-        if (userDto.getRole() != null) {
-            Role role = roleRepository.findById(Long.parseLong(userDto.getRole()))
-                    .orElseThrow(() -> new RoleNotFoundException(userDto.getRole()));
+        user.setRole(roleRepository.findById(Long.parseLong(userDto.getRole()))
+                .orElseThrow(() -> new RoleNotFoundException(userDto.getRole())));
 
-            user.setRole(role);
-        }
-
-        if (userDto.getName() != null) {
-            user.setName(userDto.getName());
-        }
+        user.setName(userDto.getName());
 
         userRepository.save(user);
 
@@ -84,6 +80,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @PostAuthorize("principal.getUsername() == returnObject.username or hasRole('ROLE_ADMIN')")
     public UserDto deleteUser(long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));

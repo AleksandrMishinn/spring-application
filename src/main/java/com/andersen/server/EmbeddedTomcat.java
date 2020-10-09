@@ -52,7 +52,6 @@ public class EmbeddedTomcat {
         context.addFilterMap(filterMapping);
     }
 
-
     private String createTempDir() {
         try {
             File tmp = File.createTempFile(tempDir, "." + port);
@@ -69,5 +68,4 @@ public class EmbeddedTomcat {
     public void stop() throws LifecycleException {
         tomcat.stop();
     }
-
 }

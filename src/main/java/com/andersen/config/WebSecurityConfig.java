@@ -11,10 +11,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
     private static UserDetailsService userService;
 
     @Bean
@@ -45,10 +46,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .password(bCryptPasswordEncoder().encode("admin"))
                 .roles("ADMIN");
 
-        auth.inMemoryAuthentication()
-                .withUser("user")
-                .password(bCryptPasswordEncoder().encode("user"))
-                .roles("USER");
+//        auth.inMemoryAuthentication()
+//                .withUser("user")
+//                .password(bCryptPasswordEncoder().encode("user"))
+//                .roles("USER");
     }
 }
 

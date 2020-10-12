@@ -5,6 +5,7 @@ import com.andersen.dto.UserDto;
 import com.andersen.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,6 +15,7 @@ public class UserController {
 
     private final UserService userService;
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Response<?> getUsers() {
@@ -24,6 +26,7 @@ public class UserController {
                 .build();
     }
 
+//    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.username")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Response<UserDto> getUser(@PathVariable Long id) {
@@ -34,6 +37,7 @@ public class UserController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Response<UserDto> createUser(@RequestBody UserDto userDto) {

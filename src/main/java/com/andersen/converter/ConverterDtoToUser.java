@@ -8,23 +8,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
-public class UserConverter implements ConverterToEntity<UserDto, User>, ConverterToDto<User, UserDto> {
+public class ConverterDtoToUser implements Converter <UserDto, User> {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
-    public UserDto convertToDto(User user) {
-        UserDto userDto = new UserDto();
-        userDto.setName(user.getName());
-        userDto.setRole(user.getRole().toString());
-        userDto.setId(user.getId());
-        userDto.setUsername(user.getUsername());
-
-        return userDto;
-    }
-
-    @Override
-    public User convertToEntity(UserDto userDto) {
+    public User convert(UserDto userDto) {
         User user = new User();
 
         user.setName(userDto.getName());

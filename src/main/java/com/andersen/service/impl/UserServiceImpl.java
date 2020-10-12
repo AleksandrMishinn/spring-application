@@ -2,7 +2,8 @@ package com.andersen.service.impl;
 
 import com.andersen.controller.exception.RoleNotFoundException;
 import com.andersen.controller.exception.UserNotFoundException;
-import com.andersen.converter.UserConverter;
+import com.andersen.converter.ConverterDtoToUser;
+import com.andersen.converter.ConverterUserToDto;
 import com.andersen.domain.Role;
 import com.andersen.domain.User;
 import com.andersen.dto.UserDto;
@@ -10,13 +11,11 @@ import com.andersen.repository.RoleRepository;
 import com.andersen.repository.UserRepository;
 import com.andersen.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,16 +26,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
-    private final UserConverter converter;
+    private final ConverterUserToDto converterUserToDto;
+    private final ConverterDtoToUser converterDtoToUser;
 
     @Override
-    @Secured("ROLE_ADMIN")
-    @Transactional
     public List<UserDto> findAll() {
         return userRepository
                 .findAll()
                 .stream()
-                .map(converter::convertToDto)
+                .map(converterUserToDto::convert)
                 .collect(Collectors.toList());
     }
 
@@ -45,13 +43,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserDto getUser(long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
-        return converter.convertToDto(user);
+        return converterUserToDto.convert(user);
     }
 
     @Override
-    @Secured("ROLE_ADMIN")
     public UserDto createUser(UserDto userDto) {
-        User newUser = converter.convertToEntity(userDto);
+        User newUser = converterDtoToUser.convert(userDto);
 
         Role role = roleRepository.findById(Long.parseLong(userDto.getRole()))
                 .orElseThrow(() -> new RoleNotFoundException(userDto.getRole()));
@@ -59,7 +56,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         userRepository.save(newUser);
 
-        return converter.convertToDto(newUser);
+        return converterUserToDto.convert(newUser);
     }
 
     @Override
@@ -76,7 +73,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         userRepository.save(user);
 
-        return converter.convertToDto(user);
+        return converterUserToDto.convert(user);
     }
 
     @Override
@@ -87,7 +84,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         userRepository.deleteById(id);
 
-        return converter.convertToDto(user);
+        return converterUserToDto.convert(user);
     }
 
     @Override

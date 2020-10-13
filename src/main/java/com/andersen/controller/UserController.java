@@ -26,7 +26,7 @@ public class UserController {
                 .build();
     }
 
-//    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.username")
+  @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.id")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Response<UserDto> getUser(@PathVariable Long id) {

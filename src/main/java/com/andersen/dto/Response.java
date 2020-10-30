@@ -8,9 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Response<Data> {
-
     private int status;
     private Data data;
     private String message;
-
 }
